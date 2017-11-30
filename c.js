@@ -444,6 +444,24 @@ https://sohoa.vnexpress.net/tin-tuc/san-pham/apple-da-du-do-nguoi-mua-the-nao-36
 </channel>
 </rss>`;
 
-const arrTin = [
-    { id: '1', link: '', title: '', description: '', image: '' },
-];
+const items = data.split('<item>');
+items.shift();
+
+function getBody(str, pre, post) {
+    const startIndex = str.indexOf(pre) + pre.length;
+    const endIndex = str.indexOf(post, startIndex + 1);
+    return str.substring(startIndex, endIndex).trim();
+}
+
+function getTinFromText(text) {
+    const title = getBody(text, '<title>', '</title>');
+    const link = getBody(text, '<link>', '</link>');
+    const image = getBody(text, 'height=100 src="', '" ></a></br>');
+    const description = getBody(text, '</a></br>', ']]>');
+    const id = link.substr(link.length - 12, 7);
+    return { title, link, image, description, id };
+}
+
+console.log(items.map(text => getTinFromText(text)));
+
+// console.log(items.length);
